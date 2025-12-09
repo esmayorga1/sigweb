@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Leaflet Sidebar V2 - Funcional</title>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+
+  <!-- Sidebar V2 -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-sidebar-v2/css/leaflet-sidebar.css">
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Estilos -->
+  <style>
+    #map {
+      width: 100%;
+      height: 100vh;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+  <div id="sidebar" class="leaflet-sidebar collapsed">
+
+    <!-- TABS -->
+    <div class="leaflet-sidebar-tabs">
+      <ul role="tablist">
+        <li><a href="#home"   role="tab"><i class="fa fa-bars"></i></a></li>
+        <li><a href="#search" role="tab"><i class="fa fa-search"></i></a></li>
+        <li><a href="#filter" role="tab"><i class="fa fa-filter"></i></a></li>
+        <li><a href="#tools"  role="tab"><i class="fa fa-wrench"></i></a></li>
+      </ul>
+    </div>
+
+    <!-- CONTENIDO DE LAS PESTAÑAS -->
+    <div class="leaflet-sidebar-content">
+
+      <div class="leaflet-sidebar-pane" id="home">
+        <h1 class="leaflet-sidebar-header">
+          Inicio
+          <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+        <p>Panel principal.</p>
+      </div>
+
+      <div class="leaflet-sidebar-pane" id="search">
+        <h1 class="leaflet-sidebar-header">
+          Buscar
+          <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+        <p>Aquí va tu buscador.</p>
+      </div>
+
+      <div class="leaflet-sidebar-pane" id="filter">
+        <h1 class="leaflet-sidebar-header">
+          Filtros
+          <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+        <p>Aquí van tus filtros.</p>
+      </div>
+
+      <div class="leaflet-sidebar-pane" id="tools">
+        <h1 class="leaflet-sidebar-header">
+          Herramientas
+          <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+        <p>Aquí van tus herramientas.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MAPA -->
+  <div id="map"></div>
+
+  <!-- Leaflet -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- Sidebar JS -->
+  <script src="https://unpkg.com/leaflet-sidebar-v2/js/leaflet-sidebar.js"></script>
+
+  <!-- JS -->
+  <script>
+    // Crear mapa
+    const map = L.map('map').setView([4.65, -74.1], 12);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19
+    }).addTo(map);
+
+    // Crear sidebar
+    const sidebar = L.control.sidebar({
+      autopan: false,
+      closeButton: true,
+      container: "sidebar",
+      position: "left"
+    }).addTo(map);
+
+    // QUE LA VENTANA SE DESPLIEGUE CUANDO SE DA CLIC
+    document.querySelectorAll(".leaflet-sidebar-tabs a").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        const id = el.getAttribute("href").replace("#", "");
+        sidebar.open(id);   // ← AQUÍ SE DESPLIEGA LA VENTANA
+      });
+    });
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mapa SIG Web</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-sidebar-v2/css/leaflet-sidebar.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+
+<body>
+
+  <!-- Botón para abrir/cerrar sidebar -->
+  <button id="btn_sidebar" 
+          style="position:absolute; top:10px; left:10px; z-index:2000; background:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">
+      <i class="fa fa-bars"></i>
+  </button>
+  
+  <div id="sidebar" class="leaflet-sidebar collapsed">
+
+    <!-- TABS -->
+    <div class="leaflet-sidebar-tabs">
+      <ul role="tablist">
+        <li><a href="#home"   role="tab"><i class="fa fa-bars"></i></a></li>
+        <li><a href="#search" role="tab"><i class="fa fa-search"></i></a></li>
+        <li><a href="#filter" role="tab"><i class="fa fa-filter"></i></a></li>
+        <li><a href="#tools"  role="tab"><i class="fa fa-wrench"></i></a></li>
+      </ul>
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="leaflet-sidebar-content">
+
+      <!-- ================= HOME ================= -->
+      <div class="leaflet-sidebar-pane" id="home">
+        <h1 class="leaflet-sidebar-header">
+          Inicio
+          <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+        <p>Panel principal.</p>
+      </div>
+
+      <!-- ================= BUSCAR ================= -->
+      <div class="leaflet-sidebar-pane" id="search">
+        <h1 class="leaflet-sidebar-header">
+          Buscar
+          <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+
+        <!-- ⭐ BUSCAR MANZANA ⭐ -->
+        <div style="
+            width:100%;
+            background:white;
+            border-radius:8px;
+            padding:12px;
+            box-shadow:0 2px 6px rgba(0,0,0,0.15);
+            margin-top:15px;">
+          
+          <label style="font-weight:bold;">Buscar manzana por código</label>
+
+          <div style="display:flex; flex-direction:row; gap:6px; align-items:center; margin-top:6px;">
+            <div style="position:relative; width:100%;">
+              <i class="fa fa-search" 
+                style="position:absolute; top:50%; left:10px; transform:translateY(-50%); color:#666;">
+              </i>
+
+              <input 
+                id="search_manzana" 
+                type="text" 
+                placeholder="Ej: 25473010000000281"
+                style="width:100%; padding:8px 8px 8px 32px; border:1px solid #ccc; border-radius:6px;">
+            </div>
+
+            <button id="btn_search_manzana"
+              style="background:#03A9F4; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;">
+              <i class="fa fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- ⭐ BUSCAR CONSTRUCCIÓN ⭐ -->
+        <div style="
+            width:100%;
+            background:white;
+            border-radius:8px;
+            padding:12px;
+            box-shadow:0 2px 6px rgba(0,0,0,0.15);
+            margin-top:20px;">
+
+          <label style="font-weight:bold;">Buscar construcción por código</label>
+
+          <div style="display:flex; flex-direction:row; gap:6px; align-items:center; margin-top:6px;">
+            <div style="position:relative; width:100%;">
+              <i class="fa fa-building" 
+                style="position:absolute; top:50%; left:10px; transform:translateY(-50%); color:#666;">
+              </i>
+
+              <input 
+                id="search_construccion" 
+                type="text" 
+                placeholder="Ej: 254730100000000980014000000000"
+                style="width:100%; padding:8px 8px 8px 32px; border:1px solid #ccc; border-radius:6px;">
+            </div>
+
+            <button id="btn_search_construccion"
+              style="background:#4CAF50; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;">
+              <i class="fa fa-arrow-right"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ================= FILTROS ================= -->
+      <div class="leaflet-sidebar-pane" id="filter">
+        <h1 class="leaflet-sidebar-header">
+          Filtros
+          <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+
+        <h3 style="margin-top:10px;">Barrios</h3>
+        <label for="filtro_barrio" style="font-weight:bold;">Seleccionar barrio</label>
+        <select id="filtro_barrio" style="width:100%; padding:6px; margin-bottom:12px;">
+          <option value="">-- Selecciona un barrio --</option>
+        </select>
+
+        <button id="btn_filtrar_barrio" style="width:100%; padding:8px; background:#4CAF50; color:white; border:none; border-radius:4px;">Aplicar filtro</button>
+        <button id="btn_limpiar_barrio" style="width:100%; padding:8px; background:#f44336; color:white; border:none; border-radius:4px; margin-top:6px;">Limpiar filtro</button>
+
+        <hr style="margin:15px 0;">
+
+        <h3 style="margin-top:10px;">Tipo de Actividad</h3>
+        <label for="filtro_actividad" style="font-weight:bold;">Seleccionar tipo</label>
+        <select id="filtro_actividad" style="width:100%; padding:6px; margin-bottom:12px;">
+          <option value="">-- Selecciona un tipo --</option>
+        </select>
+
+        <button id="btn_filtrar_actividad" style="width:100%; padding:8px; background:#03A9F4; color:white; border:none; border-radius:4px;">Aplicar filtro</button>
+        <button id="btn_limpiar_actividad" style="width:100%; padding:8px; background:#f44336; color:white; border:none; border-radius:4px; margin-top:6px;">Limpiar filtro</button>
+
+      </div>
+
+      <!-- ================= HERRAMIENTAS ================= -->
+      <div class="leaflet-sidebar-pane" id="tools">
+        <h1 class="leaflet-sidebar-header">
+          Herramientas
+          <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+
+        <h3>Medición</h3>
+        <button id="btn_measure_distance" style="width:100%; padding:6px;">Medir distancia</button>
+        <button id="btn_measure_area" style="width:100%; padding:6px; margin-top:6px;">Medir área</button>
+        <button id="btn_clear_measure" style="width:100%; padding:6px; margin-top:6px;">Limpiar mediciones</button>
+
+        <h3>Coordenadas</h3>
+        <button id="btn_coords" style="width:100%; padding:6px; margin-top:10px;">Obtener coordenadas</button>
+
+        <h3>Dibujo</h3>
+        <button id="btn_draw_point" style="width:100%; padding:6px;">Punto</button>
+        <button id="btn_draw_line" style="width:100%; padding:6px; margin-top:6px;">Línea</button>
+        <button id="btn_draw_polygon" style="width:100%; padding:6px; margin-top:6px;">Polígono</button>
+        <button id="btn_clear_draw" style="width:100%; padding:6px; margin-top:6px;">Limpiar dibujos</button>
+
+        <h3>Identificación</h3>
+        <button id="btn_identify" style="width:100%; padding:6px; margin-top:10px;">Identificar entidades</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-minimap/dist/Control.MiniMap.min.js"></script>
+  <script src="https://unpkg.com/leaflet-sidebar-v2/js/leaflet-sidebar.js"></script>
+  <script src="https://unpkg.com/leaflet-geometryutil"></script>
+  <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+
+  <script type="module" src="../js/main.js"></script>
+
+</body>
+</html>
